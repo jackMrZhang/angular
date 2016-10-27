@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="shopCart">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0">
+    <link rel="stylesheet" href="../../ionic-1.x/release/css/ionic.css">
+
+    <style>
+        .box span {
+            width: 30px;
+            height: 30px;
+            display: inline-block;
+            background-color: darkgrey;
+            line-height: 30px;
+            text-align: center;
+            font-size: 20px;
+            border-radius: 3px;
+            color: #ffffff;
+        }
+
+        .box span input {
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            font-size: 20px;
+            border:1px solid gainsboro;
+        }
+    </style>
+</head>
+<body ng-controller="cart">
+<header class="bar bar-assertive ">
+    <a class="title">购物车</a>
+    <i class="button button-clear">结算</i>
+</header>
+<header class="bar bar-dark has-header">
+    <a class="title">商品数量:{{totalNum}} 应付总额:{{totalPrice}}</a>
+</header>
+<section class="scroll-content has-header has-subheader has-footer overflow-scroll">
+    <ul class="list">
+        <li ng-repeat="n in productLists" class="item-thumbnail-left item item-icon-right">
+            <img ng-src="{{n.pic}}">
+            <p>{{n.title}}</p>
+            <p>单价:{{n.price}}</p>
+            <p class="box">数量:
+                <span ng-click="reduce($index)">-</span>
+                <span><input type="number" ng-model="n.quality"></span>
+                <span ng-click="add($index)">+</span>
+            </p>
+            <i class="icon ion-android-delete" ng-click="delRow($index)"></i>
+        </li>
+    </ul>
+</section>
+<footer class="tabs tabs-dark tabs-icon-top">
+    <div class="tab-item">
+        <i class="icon ion-ios-home"></i>
+        首页
+    </div>
+    <div class="tab-item">
+        <i class="icon ion-navicon-round"></i>
+        分类
+    </div>
+    <div class="tab-item has-badge">
+        <i class="icon ion-ios-cart"></i>
+        <i class="badge badge-assertive">{{totalNum}}</i>
+        购物车
+    </div>
+    <div class="tab-item">
+        <i class="icon ion-person"></i>
+        我的秀
+    </div>
+    <div class="tab-item">
+        <i class="icon ion-more"></i>
+        更多
+    </div>
+</footer>
+<script src="../services/angular.js"></script>
+<script>
+    (function(){
+        angular.module("shopCart",[])
+                .controller("cart",["$scope",function($scope){
+                    //从服务获取过来的数据
+                    $scope.productLists = [
+                        {
+                            "title":"战地吉普马甲男2016秋冬新款户外休闲运",
+                            "pic":"assets/77f4.jpg",
+                            "price":423,
+                            "quality":1
+                        },
+                        {
+                            "title":"恒源祥羊毛背心男2016秋冬装V领坎肩商",
+                            "pic":"assets/a13.jpg",
+                            "price":123,
+                            "quality":1
+                        },
+                        {
+                            "title":"Gap双色拼接羽绒背心|男装353392 纯色",
+                            "pic":"assets/93b92.jpg",
+                            "price":599,
+                            "quality":1
+                        },
+                        {
+                            "title":"百酷源 马甲男2016秋冬款羽绒棉连帽马",
+                            "pic":"assets/e2.jpg",
+                            "price":139,
+                            "quality":1
+                        }
+                    ];
+                    _countProduct();
+                    function _countProduct(){
+                        $scope.totalNum = 0;
+                        $scope.totalPrice = 0;
+
+                        angular.forEach($scope.productLists,function(data,i){
+                            $scope.totalNum += data.quality;
+                            $scope.totalPrice += data.quality * data.price;
+                        })
+
+                    }
+                    $scope.add = function(index){
+                        $scope.productLists[index].quality ++;
+                        _countProduct()
+                    }
+                    $scope.reduce = function(index){
+                        if($scope.productLists[index].quality <=1 ){
+                            $scope.productLists[index].quality = 1;
+                        }else{
+                            $scope.productLists[index].quality--;
+                        }
+                        _countProduct()
+                    }
+                    $scope.delRow = function(index){
+                        $scope.productLists.splice(index,1);
+                        _countProduct();
+                    }
+
+                    $scope.$watch("totalPrice",function(n,o){
+                        if(n>=10000){
+                            alert("恭喜您成为会员！")
+                        }
+                    })
+                }])
+    })()
+</script>
+</body>
+</html>
